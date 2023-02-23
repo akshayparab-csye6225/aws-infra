@@ -47,7 +47,7 @@ This will apply the changes to your infrastructure.
 
 4) Cleanup the infrastructure by running the following command:
    ```
-   terraform destroy
+   terraform destroy -var-file="{environment}.tfvars"
    ```
 
 ### Modules
