@@ -377,7 +377,7 @@ variable "ec2_iam_profile_name" {
 }
 
 variable "s3_versioning_configuration" {
-  type        = bool
+  type        = string
   description = "s3 versioning configuration"
   default     = "Disabled"
 }

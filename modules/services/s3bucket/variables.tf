@@ -47,7 +47,7 @@ variable "transition_to_ia_transition_storage_class" {
 }
 
 variable "s3_versioning_configuration" {
-  type        = bool
+  type        = string
   description = "s3 versioning configuration"
   default     = "Disabled"
 }
