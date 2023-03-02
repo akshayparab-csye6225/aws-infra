@@ -45,3 +45,9 @@ variable "transition_to_ia_transition_storage_class" {
   description = "storage_class of lifecycle rule to transition from standard to standard_ia"
   default     = "STANDARD_IA"
 }
+
+variable "s3_versioning_configuration" {
+  type        = bool
+  description = "s3 versioning configuration"
+  default     = "Disabled"
+}
