@@ -4,3 +4,7 @@ output "vpc-id-out" {
 output "vpc-public-subnet-id-out" {
   value = aws_subnet.public_subnet[0].id
 }
+
+output "vpc-private-subnet-id-out" {
+  value = aws_subnet.private_subnet.*.id
+}

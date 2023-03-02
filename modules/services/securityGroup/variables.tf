@@ -25,3 +25,20 @@ variable "sg_name" {
 }
 
 variable "vpc-id-in" {}
+
+variable "sg-id-in" {
+  type        = string
+  description = "ID input of another security group"
+  default     = null
+}
+
+variable "sg_egress_ports" {
+  type        = list(number)
+  description = "list of security group egress ports"
+  default     = []
+}
+variable "sg_egress_cidr" {
+  type        = list(string)
+  description = "egress cidr block"
+  default     = []
+}
