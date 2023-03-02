@@ -94,4 +94,8 @@ module "ec2_instance" {
   root_volume_type                  = var.root_volume_type
   root_volume_delete_on_termination = var.root_volume_delete_on_termination
   db-instance-host-in               = module.mysql_rds_db.db-instance-host-out
+  rds_instance_name                 = var.rds_instance_name
+  rds_instance_port                 = var.rds_instance_port
+  rds_instance_username             = var.rds_instance_username
+  rds_instance_password             = var.rds_instance_password
 }
