@@ -375,3 +375,9 @@ variable "ec2_iam_profile_name" {
   description = "EC2 IAM Profile Name"
   default     = "ec2-instance-profile"
 }
+
+variable "s3_versioning_configuration" {
+  type        = bool
+  description = "s3 versioning configuration"
+  default     = "Disabled"
+}

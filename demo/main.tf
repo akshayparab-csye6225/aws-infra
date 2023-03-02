@@ -70,6 +70,7 @@ module "aws_s3_bucket" {
   transition_to_ia_status                   = var.transition_to_ia_status
   transition_to_ia_transition_duration      = var.transition_to_ia_transition_duration
   transition_to_ia_transition_storage_class = var.transition_to_ia_transition_storage_class
+  s3_versioning_configuration               = var.s3_versioning_configuration
 }
 
 module "ec2_instance" {

@@ -5,6 +5,12 @@ resource "aws_s3_bucket" "private_bucket" {
   force_destroy = var.s3_force_destroy
 }
 
+resource "aws_s3_bucket_versioning" "s3_versioning_configuration" {
+  bucket = aws_s3_bucket.private_bucket.id
+  versioning_configuration {
+    status = var.s3_versioning_configuration
+  }
+}
 resource "aws_s3_bucket_lifecycle_configuration" "s3_lifecycle_policy" {
   bucket = aws_s3_bucket.private_bucket.id
 
