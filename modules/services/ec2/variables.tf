@@ -1,3 +1,33 @@
+variable "env" {
+  type        = string
+  description = "Environment"
+  default     = "production"
+}
+variable "aws_region" {
+  type        = string
+  description = "AWS Region"
+  default     = "us-east-1"
+}
+variable "aws_iam_policy_name" {
+  type        = string
+  description = "AWS IAM Policy Name"
+  default     = "WebAppS3"
+}
+
+variable "aws_iam_policy_action" {
+  type        = list(string)
+  description = "AWS IAM Policy Action for S3"
+  default     = ["s3:Put*", "s3:Delete*"]
+}
+
+variable "aws_iam_role_name" {
+  type        = string
+  description = "AWS IAM Role Name"
+  default     = "EC2-CSYE6225"
+}
+
+variable "s3-bucket-name-in" {}
+
 variable "ami_id" {
   type        = string
   description = "Value of AMI ID of AMI which will be the base image for EC2"
@@ -55,3 +85,52 @@ variable "ami_name_regex" {
 variable "vpc-public-subnet-id-in" {}
 
 variable "ec2-security-group-id-in" {}
+
+variable "db-instance-host-in" {}
+variable "envfilePath" {
+  type        = string
+  description = ".env file path for web server"
+  default     = "/home/ec2-user/webapp/.env"
+}
+
+variable "server_port" {
+  type        = number
+  description = "Port on which web server will run"
+  default     = 3001
+}
+
+variable "rds_instance_name" {
+  type        = string
+  description = "AWS RDS Instance Name"
+  default     = "csye6225"
+}
+
+variable "rds_instance_port" {
+  type        = number
+  description = "AWS RDS Instance Port"
+  default     = 3306
+}
+
+variable "rds_instance_username" {
+  type        = string
+  description = "AWS RDS Instance Username"
+  default     = "csye6225"
+}
+
+variable "rds_instance_password" {
+  type        = string
+  description = "AWS RDS Instance Password"
+  default     = "K#2hA7%Lx9#p"
+}
+
+variable "rds_dialect" {
+  type        = string
+  description = "RDS Instance Dialect"
+  default     = "mysql"
+}
+
+variable "ec2_iam_profile_name" {
+  type=string
+  description = "EC2 IAM Profile Name"
+  default = "ec2-instance-profile"
+}

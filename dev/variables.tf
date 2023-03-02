@@ -142,3 +142,237 @@ variable "sg_name" {
   description = "Security Group Name Reference"
   default     = "application"
 }
+
+variable "sg-id-in" {
+  type = string
+  description = "ID input of another security group"
+  default = null
+}
+
+variable "db_sg_name" {
+  type        = string
+  description = "Name of security group for rds"
+  default     = "database"
+}
+
+variable "db_tcp_ingress_ports" {
+  type        = list(number)
+  description = "list of tcp ingress ports"
+  default     = [3306]
+}
+
+variable "db_sg_protocol" {
+  description = "protocol"
+  type        = map(string)
+  default = {
+    tcp = "tcp",
+  }
+}
+
+variable "db_tcp_ingress_cidr" {
+  type        = list(string)
+  description = "tcp ingress cidr block"
+  default     = null
+}
+
+variable "aws_db_parameter_group_family" {
+  type        = string
+  description = "AWS DB Parameter Group Family"
+  default     = "mysql8.0"
+}
+
+variable "rds_instance_engine" {
+  type        = string
+  description = "AWS RDS Instance Engine"
+  default     = "mysql"
+}
+
+variable "rds_instance_engine_version" {
+  type        = string
+  description = "AWS RDS Instance Engine Version"
+  default     = "8.0"
+}
+
+variable "rds_instance_class" {
+  type        = string
+  description = "AWS RDS Instance Class"
+  default     = "db.t3.micro"
+}
+
+variable "rds_instance_identifier" {
+  type        = string
+  description = "AWS RDS Instance Identifier"
+  default     = "csye6225"
+}
+
+variable "rds_instance_name" {
+  type        = string
+  description = "AWS RDS Instance Name"
+  default     = "csye6225"
+}
+
+variable "rds_instance_port" {
+  type        = number
+  description = "AWS RDS Instance Port"
+  default     = 3306
+}
+
+variable "rds_instance_username" {
+  type        = string
+  description = "AWS RDS Instance Username"
+  default     = "csye6225"
+}
+
+variable "rds_instance_password" {
+  type        = string
+  description = "AWS RDS Instance Password"
+  default     = "K#2hA7%Lx9#p"
+}
+
+variable "rds_instance_skip_final_snapshot" {
+  type        = bool
+  description = "AWS RDS Whether to skip final snapshot"
+  default     = true
+}
+
+variable "rds_instance_publicly_accessible" {
+  type        = bool
+  description = "AWS RDS Whether Publicly Accessible"
+  default     = false
+}
+
+variable "rds_instance_multi_az" {
+  type        = bool
+  description = "AWS RDS Whether Multi AZ Deployment"
+  default     = false
+}
+
+variable "rds_instance_storage" {
+  type        = number
+  description = "AWS RDS Instance Allocated Storage"
+  default     = 10
+}
+
+variable "acl" {
+  type        = string
+  description = "s3 bucket acl"
+  default     = "private"
+}
+
+variable "s3_force_destroy" {
+  type        = bool
+  description = "force destroy s3 bucket"
+  default     = false
+}
+
+variable "sse_algorithm" {
+  type        = string
+  description = "server side encryption algorithm"
+  default     = "AES256"
+}
+
+variable "transition_to_ia_id" {
+  type        = string
+  description = "id for lifecycle rule to transition from standard to standard_ia"
+  default     = "transition-to-ia"
+}
+
+variable "transition_to_ia_status" {
+  type        = string
+  description = "status of lifecycle rule to transition from standard to standard_ia"
+  default     = "Enabled"
+}
+
+variable "transition_to_ia_transition_duration" {
+  type        = number
+  description = "duration of lifecycle rule to transition from standard to standard_ia"
+  default     = 30
+}
+
+variable "transition_to_ia_transition_storage_class" {
+  type        = string
+  description = "storage_class of lifecycle rule to transition from standard to standard_ia"
+  default     = "STANDARD_IA"
+}
+
+variable "aws_iam_policy_name" {
+  type        = string
+  description = "AWS IAM Policy Name"
+  default     = "WebAppS3"
+}
+
+variable "aws_iam_policy_action" {
+  type        = list(string)
+  description = "AWS IAM Policy Action for S3"
+  default     = ["s3:Put*", "s3:Delete*"]
+}
+
+variable "aws_iam_role_name" {
+  type        = string
+  description = "AWS IAM Role Name"
+  default     = "EC2-CSYE6225"
+}
+
+variable "s3-bucket-name-in" {
+  type        = string
+  description = "S3 Bucket"
+  default     = null
+}
+
+variable "sg_egress_ports" {
+  type        = list(number)
+  description = "list of security group egress ports"
+  default     = [0]
+}
+variable "sg_egress_cidr" {
+  type        = list(string)
+  description = "egress cidr block"
+  default     = []
+}
+
+variable "app_sg_egress_ports" {
+  type        = list(number)
+  description = "list of security group egress ports"
+  default     = [0]
+}
+variable "app_sg_egress_cidr" {
+  type        = list(string)
+  description = "egress cidr block"
+  default     = ["0.0.0.0/0"]
+}
+
+variable "envfilePath" {
+  type        = string
+  description = ".env file path for web server"
+  default     = "/home/ec2-user/webapp/.env"
+}
+
+variable "server_port" {
+  type        = number
+  description = "Port on which web server will run"
+  default     = 3001
+}
+
+variable "db-instance-host-in" {
+  type        = string
+  description = "RDS Instance Host"
+  default     = "localhost"
+}
+
+variable "rds_dialect" {
+  type        = string
+  description = "RDS Instance Dialect"
+  default     = "mysql"
+}
+
+variable "db-security-group-id-in" {
+  type        = string
+  description = "id of custom db security group"
+  default     = "#"
+}
+
+variable "ec2_iam_profile_name" {
+  type        = string
+  description = "EC2 IAM Profile Name"
+  default     = "ec2-instance-profile"
+}
