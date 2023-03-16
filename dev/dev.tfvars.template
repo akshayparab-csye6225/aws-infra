@@ -1,5 +1,6 @@
-env            = "development"
-aws_profile    = "dev"
-aws_region     = "us-east-2"
-vpc_cidr_block = "10.1.0.0/16"
-azs            = []
+env              = "dev"
+aws_profile      = "dev"
+aws_region       = "us-east-1"
+vpc_cidr_block   = "10.1.0.0/16"
+azs              = []
+s3_force_destroy = true
