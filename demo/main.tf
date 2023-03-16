@@ -80,6 +80,7 @@ module "ec2_instance" {
     module.app_security_group,
     module.aws_s3_bucket
   ]
+  env                               = var.env
   ec2_iam_profile_name              = var.ec2_iam_profile_name
   aws_iam_policy_name               = var.aws_iam_policy_name
   aws_iam_policy_action             = var.aws_iam_policy_action
@@ -98,4 +99,22 @@ module "ec2_instance" {
   rds_instance_port                 = var.rds_instance_port
   rds_instance_username             = var.rds_instance_username
   rds_instance_password             = var.rds_instance_password
+  server_port                       = var.server_port
+}
+
+module "dns-record" {
+  source = "../modules/services/dnsRecord"
+  depends_on = [
+    module.ec2_instance
+  ]
+  ec2-public-ip-in        = module.ec2_instance.ec2-public-ip-out
+  hosted_zone_name        = var.hosted_zone_name
+  private_zone            = var.private_zone
+  hosted_zone_domain_name = var.hosted_zone_domain_name
+  hosted_zone_record_type = var.hosted_zone_record_type
+  hosted_zone_record_ttl  = var.hosted_zone_record_ttl
+  allow_overwrite_record  = var.allow_overwrite_record
+  createAlias             = var.createAlias
+  alias_domain_name       = var.alias_domain_name
+  alias_record_type       = var.alias_record_type
 }

@@ -1,7 +1,7 @@
 variable "env" {
   type        = string
   description = "Environment"
-  default     = "development"
+  default     = "dev"
 }
 
 variable "aws_profile" {
@@ -144,9 +144,9 @@ variable "sg_name" {
 }
 
 variable "sg-id-in" {
-  type = string
+  type        = string
   description = "ID input of another security group"
-  default = null
+  default     = null
 }
 
 variable "db_sg_name" {
@@ -375,4 +375,70 @@ variable "ec2_iam_profile_name" {
   type        = string
   description = "EC2 IAM Profile Name"
   default     = "ec2-instance-profile"
+}
+
+variable "s3_versioning_configuration" {
+  type        = string
+  description = "s3 versioning configuration"
+  default     = "Disabled"
+}
+
+variable "hosted_zone_name" {
+  type        = string
+  description = "ID of Hosted Zone"
+  default     = "dev.akshayparab.me"
+}
+
+variable "private_zone" {
+  type        = bool
+  description = "Is hosted zone private"
+  default     = false
+}
+
+variable "hosted_zone_domain_name" {
+  type        = string
+  description = "Domain Name"
+  default     = "dev.akshayparab.me"
+}
+
+variable "hosted_zone_record_type" {
+  type        = string
+  description = "Record Type"
+  default     = "A"
+}
+
+variable "hosted_zone_record_ttl" {
+  type        = string
+  description = "TTL of Record"
+  default     = "60"
+}
+
+variable "allow_overwrite_record" {
+  type        = bool
+  description = "Allow overwrite record"
+  default     = true
+}
+
+variable "createAlias" {
+  type        = bool
+  description = "To create alias or no"
+  default     = true
+}
+
+variable "alias_record_type" {
+  type        = string
+  description = "Alias Record Type"
+  default     = "A"
+}
+
+variable "alias_domain_name" {
+  type        = string
+  description = "Alias Domain Name"
+  default     = "www"
+}
+
+variable "ec2-public-ip-in" {
+  type        = string
+  description = "Public IP of EC2 Instance"
+  default     = "127.0.0.1"
 }
