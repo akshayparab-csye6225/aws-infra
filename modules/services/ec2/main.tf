@@ -7,7 +7,7 @@ data "aws_ami" "latest" {
   }
 }
 
-# IAM Policy
+# IAM Policy to Access Buckets
 resource "aws_iam_policy" "webapp_s3_policy" {
   name = var.aws_iam_policy_name
 
@@ -21,6 +21,38 @@ resource "aws_iam_policy" "webapp_s3_policy" {
           "arn:aws:s3:::${var.s3-bucket-name-in}",
           "arn:aws:s3:::${var.s3-bucket-name-in}/*"
         ]
+      }
+    ]
+  })
+}
+
+# IAM Policy to Access CloudWatch
+resource "aws_iam_policy" "cloudwatch_policy" {
+  name = var.aws_iam_cw_policy_name
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "cloudwatch:PutMetricData",
+          "ec2:DescribeVolumes",
+          "ec2:DescribeTags",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams",
+          "logs:DescribeLogGroups",
+          "logs:CreateLogStream",
+          "logs:CreateLogGroup"
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ssm:GetParameter"
+        ],
+        "Resource" : "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*"
       }
     ]
   })
@@ -46,6 +78,11 @@ resource "aws_iam_role" "ec2_csye6225_role" {
 
 # IAM Role Policy Attachment
 resource "aws_iam_role_policy_attachment" "webapp_s3_attachment" {
+  policy_arn = aws_iam_policy.cloudwatch_policy.arn
+  role       = aws_iam_role.ec2_csye6225_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_policy_attachment" {
   policy_arn = aws_iam_policy.webapp_s3_policy.arn
   role       = aws_iam_role.ec2_csye6225_role.name
 }
@@ -66,6 +103,7 @@ resource "aws_instance" "my_web_server" {
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
   user_data                   = <<EOF
 #!/bin/bash
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/home/ec2-user/webapp/scripts/cloudwatch-config.json -s
 cat <<EOT >> ${var.envfilePath}
 NODE_ENV=${var.env}
 PORT=${var.server_port}
@@ -77,7 +115,8 @@ MYSQL_DB_PORT=${var.rds_instance_port}
 DB_DIALECT=${var.rds_dialect}
 S3_BUCKET_NAME=${var.s3-bucket-name-in}
 AWS_DEFAULT_REGION=${var.aws_region}
-
+STATSD_HOST=${var.statsd_host}
+STATSD_PORT=${var.statsd_port}
 EOT
 EOF
   root_block_device {
