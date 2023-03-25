@@ -100,6 +100,9 @@ module "ec2_instance" {
   rds_instance_username             = var.rds_instance_username
   rds_instance_password             = var.rds_instance_password
   server_port                       = var.server_port
+  statsd_host                       = var.statsd_host
+  statsd_port                       = var.statsd_port
+  aws_iam_cw_policy_name            = var.aws_iam_cw_policy_name
 }
 
 module "dns-record" {

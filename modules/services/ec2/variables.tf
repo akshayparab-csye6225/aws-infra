@@ -130,7 +130,25 @@ variable "rds_dialect" {
 }
 
 variable "ec2_iam_profile_name" {
-  type=string
+  type        = string
   description = "EC2 IAM Profile Name"
-  default = "ec2-instance-profile"
+  default     = "ec2-instance-profile"
+}
+
+variable "statsd_host" {
+  type        = string
+  description = "statsd host"
+  default     = "localhost"
+}
+
+variable "statsd_port" {
+  type        = number
+  description = "statsd port"
+  default     = 8125
+}
+
+variable "aws_iam_cw_policy_name" {
+  type        = string
+  description = "AWS IAM CW Policy Name"
+  default     = "CloudWatchAgentServerPolicy"
 }

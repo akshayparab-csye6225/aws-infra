@@ -442,3 +442,21 @@ variable "ec2-public-ip-in" {
   description = "Public IP of EC2 Instance"
   default     = "127.0.0.1"
 }
+
+variable "statsd_host" {
+  type        = string
+  description = "statsd host"
+  default     = "localhost"
+}
+
+variable "statsd_port" {
+  type        = number
+  description = "statsd port"
+  default     = 8125
+}
+
+variable "aws_iam_cw_policy_name" {
+  type        = string
+  description = "AWS IAM CW Policy Name"
+  default     = "CloudWatchAgentServerPolicy"
+}
