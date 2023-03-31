@@ -36,7 +36,6 @@ resource "aws_iam_policy" "cloudwatch_policy" {
       {
         "Effect" : "Allow",
         "Action" : [
-          "cloudwatch:PutMetricData",
           "ec2:DescribeVolumes",
           "ec2:DescribeTags",
           "logs:PutLogEvents",
@@ -44,6 +43,15 @@ resource "aws_iam_policy" "cloudwatch_policy" {
           "logs:DescribeLogGroups",
           "logs:CreateLogStream",
           "logs:CreateLogGroup"
+        ],
+        "Resource" : [
+          "arn:aws:logs:*:*:log-group:csye6225:*"
+        ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "cloudwatch:PutMetricData"
         ],
         "Resource" : "*"
       },
