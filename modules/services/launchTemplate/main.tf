@@ -129,8 +129,8 @@ resource "aws_launch_template" "asg_launch_config" {
   network_interfaces {
     subnet_id                   = var.vpc-public-subnet-id-in
     security_groups             = [var.ec2-security-group-id-in]
-    associate_public_ip_address = true
-    delete_on_termination       = true
+    associate_public_ip_address = var.associate_public_ip_address
+    delete_on_termination       = var.nw_interface_delete_on_termination
   }
 
   # vpc_security_group_ids      = [var.ec2-security-group-id-in]

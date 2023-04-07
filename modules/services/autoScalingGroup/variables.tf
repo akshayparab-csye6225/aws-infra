@@ -263,7 +263,13 @@ variable "alarm_scale_up_actions_enabled" {
 }
 
 variable "asg_termination_policies" {
-  type = list(string)
+  type        = list(string)
   description = "Termination Policy for Auto Scaling Group"
-  default = ["OldestLaunchTemplate", "OldestInstance"]
+  default     = ["OldestLaunchTemplate", "OldestInstance"]
+}
+
+variable "asg_force_delete" {
+  type        = bool
+  description = "Auto Scaling Group Force Delete"
+  default     = false
 }

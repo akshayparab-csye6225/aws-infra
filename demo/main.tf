@@ -96,30 +96,31 @@ module "launch_template" {
     module.app_security_group,
     module.aws_s3_bucket
   ]
-  env                               = var.env
-  ec2_iam_profile_name              = var.ec2_iam_profile_name
-  aws_iam_policy_name               = var.aws_iam_policy_name
-  aws_iam_policy_action             = var.aws_iam_policy_action
-  s3-bucket-name-in                 = module.aws_s3_bucket.s3-bucket-name-out
-  ami_id                            = var.ami_id
-  vpc-public-subnet-id-in           = module.networking_service.vpc-public-subnet-id-out
-  ec2-security-group-id-in          = module.app_security_group.security-group-id-out
-  ec2_instance_type                 = var.ec2_instance_type
-  associate_public_ip_address       = var.associate_public_ip_address
-  disable_api_termination           = var.disable_api_termination
-  root_volume_size                  = var.root_volume_size
-  root_volume_type                  = var.root_volume_type
-  root_volume_delete_on_termination = var.root_volume_delete_on_termination
-  db-instance-host-in               = module.mysql_rds_db.db-instance-host-out
-  rds_instance_name                 = var.rds_instance_name
-  rds_instance_port                 = var.rds_instance_port
-  rds_instance_username             = var.rds_instance_username
-  rds_instance_password             = var.rds_instance_password
-  server_port                       = var.server_port
-  statsd_host                       = var.statsd_host
-  statsd_port                       = var.statsd_port
-  aws_iam_cw_policy_name            = var.aws_iam_cw_policy_name
-  launch_template_name_prefix       = var.launch_template_name_prefix
+  env                                = var.env
+  ec2_iam_profile_name               = var.ec2_iam_profile_name
+  aws_iam_policy_name                = var.aws_iam_policy_name
+  aws_iam_policy_action              = var.aws_iam_policy_action
+  s3-bucket-name-in                  = module.aws_s3_bucket.s3-bucket-name-out
+  ami_id                             = var.ami_id
+  vpc-public-subnet-id-in            = module.networking_service.vpc-public-subnet-id-out
+  ec2-security-group-id-in           = module.app_security_group.security-group-id-out
+  ec2_instance_type                  = var.ec2_instance_type
+  associate_public_ip_address        = var.associate_public_ip_address
+  disable_api_termination            = var.disable_api_termination
+  root_volume_size                   = var.root_volume_size
+  root_volume_type                   = var.root_volume_type
+  root_volume_delete_on_termination  = var.root_volume_delete_on_termination
+  db-instance-host-in                = module.mysql_rds_db.db-instance-host-out
+  rds_instance_name                  = var.rds_instance_name
+  rds_instance_port                  = var.rds_instance_port
+  rds_instance_username              = var.rds_instance_username
+  rds_instance_password              = var.rds_instance_password
+  server_port                        = var.server_port
+  statsd_host                        = var.statsd_host
+  statsd_port                        = var.statsd_port
+  aws_iam_cw_policy_name             = var.aws_iam_cw_policy_name
+  launch_template_name_prefix        = var.launch_template_name_prefix
+  nw_interface_delete_on_termination = var.nw_interface_delete_on_termination
 }
 
 module "load_balancer" {
@@ -202,6 +203,7 @@ module "auto_scaling_group" {
   alarm_scale_up_statistic             = var.alarm_scale_up_statistic
   alarm_scale_up_actions_enabled       = var.alarm_scale_up_actions_enabled
   asg_termination_policies             = var.asg_termination_policies
+  asg_force_delete                     = var.asg_force_delete
 }
 
 module "dns_record" {

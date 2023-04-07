@@ -8,7 +8,7 @@ resource "aws_autoscaling_group" "asg" {
   health_check_grace_period = var.asg_health_check_grace_period
   health_check_type         = var.asg_health_check_type
   termination_policies      = var.asg_termination_policies
-  force_delete              = true
+  force_delete              = var.asg_force_delete
   tag {
     key                 = var.asg_tag_key
     value               = var.asg_tag_value
