@@ -164,3 +164,9 @@ variable "launch_template_name_prefix" {
   description = "Launch Template Name"
   default     = "csye6225-lt-"
 }
+
+variable "nw_interface_delete_on_termination" {
+  type        = bool
+  description = "Network Interface Delete On Termination"
+  default     = true
+}
