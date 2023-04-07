@@ -67,13 +67,13 @@ variable "protocol" {
 variable "tcp_ingress_ports" {
   type        = list(number)
   description = "list of tcp ingress ports"
-  default     = [22, 80, 443, 3001]
+  default     = [3001]
 }
 
 variable "tcp_ingress_cidr" {
   type        = list(string)
   description = "tcp ingress cidr block"
-  default     = ["0.0.0.0/0"]
+  default     = null
 }
 
 variable "ami_id" {
@@ -433,7 +433,7 @@ variable "alias_record_type" {
 variable "alias_domain_name" {
   type        = string
   description = "Alias Domain Name"
-  default     = "www"
+  default     = "prod.akshayparab.me"
 }
 
 variable "ec2-public-ip-in" {
@@ -458,4 +458,472 @@ variable "aws_iam_cw_policy_name" {
   type        = string
   description = "AWS IAM CW Policy Name"
   default     = "CloudWatchAgentServerPolicy"
+}
+
+variable "lb_sg_name" {
+  type        = string
+  description = "Load Balancer Security Group Name"
+  default     = "load balancer"
+}
+
+variable "lb_ingress_ports" {
+  type        = list(number)
+  description = "list of tcp ingress ports"
+  default     = [80, 443]
+}
+
+variable "lb_sg_protocol" {
+  description = "protocol"
+  type        = map(string)
+  default = {
+    tcp = "tcp",
+  }
+}
+
+variable "lb_ingress_cidr" {
+  type        = list(string)
+  description = "tcp ingress cidr block"
+  default     = ["0.0.0.0/0"]
+}
+
+variable "lb_sg_egress_ports" {
+  type        = list(number)
+  description = "list of security group egress ports"
+  default     = [0]
+}
+variable "lb_sg_egress_cidr" {
+  type        = list(string)
+  description = "egress cidr block"
+  default     = ["0.0.0.0/0"]
+}
+
+variable "lb-sg-id-in" {
+  type        = string
+  description = "Load Balancer Security Group Id"
+  default     = "#"
+}
+
+variable "vpc-all-public-subnet-id-in" {
+  type        = list(string)
+  description = "Subnet Ids of all public subnets"
+  default     = ["value"]
+}
+
+variable "launch-template-id-in" {
+  type        = string
+  description = "Launch Template Id"
+  default     = "#"
+}
+variable "lb-target-group-arn-in" {
+  type        = string
+  description = "Load Balancer Target Group ARN"
+  default     = "#"
+}
+
+variable "lb-dns-name-in" {
+  type        = string
+  description = "Load Balancer DNS Name"
+  default     = "#"
+}
+
+variable "lb-zone-id-in" {
+  type        = string
+  description = "Load Balancer Zone Id"
+  default     = "#"
+}
+
+variable "lb_name" {
+  type        = string
+  description = "Name of Load Balancer"
+  default     = "csye6225-lb"
+}
+
+variable "lb_internal" {
+  type        = bool
+  description = "Whether Load Balancer is Internal or Internet-Facing"
+  default     = false
+}
+
+variable "lb_type" {
+  type        = string
+  description = "Type of Load Balancer"
+  default     = "application"
+}
+
+variable "lb_ip_address_type" {
+  type        = string
+  description = "IP Address type for Load Balancer"
+  default     = "ipv4"
+}
+
+variable "lb_tg_name_prefix" {
+  type        = string
+  description = "Name of Load Balancer Target Group"
+  default     = "lbTg-"
+}
+
+variable "lb_tg_target_type" {
+  type        = string
+  description = "Target Type of Load Balancer Target Group"
+  default     = "instance"
+}
+
+variable "lb_tg_port" {
+  type        = number
+  description = "Port that Load Balancer Target Group is using"
+  default     = 3001
+}
+
+variable "lb_tg_protocol" {
+  type        = string
+  description = "Protocol that Load Balancer Target Group is Using"
+  default     = "HTTP"
+}
+
+variable "lb_tg_protocol_version" {
+  type        = string
+  description = "Protocol Version that Load Balancer Target Group is Using"
+  default     = "HTTP1"
+}
+
+variable "lb_tg_healthcheck_enabled" {
+  type        = bool
+  description = "Load Balancer Healthcheck To Enabled or No"
+  default     = true
+}
+
+variable "lb_tg_healthcheck_path" {
+  type        = string
+  description = "HealthCheck Path"
+  default     = "/healthz"
+}
+
+variable "lb_tg_healthcheck_port" {
+  type        = string
+  description = "Load Balancer Healthcheck Port"
+  default     = "traffic-port"
+}
+
+variable "lb_tg_healthcheck_protocol" {
+  type        = string
+  description = "Load Balancer Healthcheck Protocol"
+  default     = "HTTP"
+}
+
+variable "lb_tg_healthcheck_timeout" {
+  type        = number
+  description = "Load Balancer Healthcheck Timeout"
+  default     = 6
+}
+
+variable "lb_tg_healthcheck_interval" {
+  type        = number
+  description = "Load Balancer Healthcheck Interval"
+  default     = 30
+}
+
+variable "lb_tg_healthcheck_healthy_threshold" {
+  type        = number
+  description = "Load Balancer Healthcheck Healthy Threshold"
+  default     = 3
+}
+
+variable "lb_tg_healthcheck_unhealthy_threshold" {
+  type        = number
+  description = "Load Balancer Healthcheck Unhealthy Threshold"
+  default     = 3
+}
+
+variable "lb_listener_port" {
+  type        = number
+  description = "Load Balancer Listener Port"
+  default     = 80
+}
+
+variable "lb_listener_protocol" {
+  type        = string
+  description = "Load Balancer Listener Protocol"
+  default     = "HTTP"
+}
+
+variable "lb_listener_default_action_type" {
+  type        = string
+  description = "Load Balancer Default Action Type"
+  default     = "forward"
+}
+
+variable "asg_name" {
+  type        = string
+  description = "Auto Scaling Group Name"
+  default     = "csye6225-asg"
+}
+
+variable "asg_desired_capacity" {
+  type        = number
+  description = "Auto Scaling Group Desired Instance Capacity"
+  default     = 1
+}
+
+variable "asg_max_size" {
+  type        = number
+  description = "Auto Scaling Group Max Number of Instances"
+  default     = 3
+}
+
+variable "asg_min_size" {
+  type        = number
+  description = "Auto Scaling Group Max Number of Instances"
+  default     = 1
+}
+
+variable "asg_default_cooldown" {
+  type        = number
+  description = "Auto Scaling Default Cool Down"
+  default     = 60
+}
+
+variable "asg_health_check_grace_period" {
+  type        = number
+  description = "Auto Scaling Health Check Grace Period"
+  default     = 60
+}
+
+variable "asg_health_check_type" {
+  type        = string
+  description = "Auto Scaling Group Health Check Type"
+  default     = "EC2"
+}
+
+variable "asg_tag_key" {
+  type        = string
+  description = "Auto Scaling Group Tag Key"
+  default     = "Type"
+}
+
+variable "asg_tag_value" {
+  type        = string
+  description = "Auto Scaling Group Tag Value"
+  default     = "auto_sg_ec2_instance"
+}
+
+variable "asg_tag_propagate_at_launch" {
+  type        = bool
+  description = "Auto Scaling Group Tag Propogate At Launch"
+  default     = true
+}
+
+variable "asg_launch_template_version" {
+  type        = string
+  description = "Auto Scaling Group Launch Template Version"
+  default     = "$Latest"
+}
+
+variable "asp_scale_down_name" {
+  type        = string
+  description = "Auto Scaling Policy Name"
+  default     = "custom_scale_down_policy"
+}
+
+variable "asp_scale_down_adjustment_type" {
+  type        = string
+  description = "Auto Scaling Policy Scale Down Adjustment Type"
+  default     = "ChangeInCapacity"
+}
+
+variable "asp_scale_down_scaling_adjustment" {
+  type        = number
+  description = "Auto Scaling Policy Scale Down Scaling Adjustment"
+  default     = -1
+}
+
+variable "asp_scale_down_cooldown" {
+  type        = number
+  description = "Auto Scaling Policy Scale Down Cooldown"
+  default     = 60
+}
+
+variable "asp_scale_down_policy_type" {
+  type        = string
+  description = "Auto Scaling Policy Scale Down Policy Type"
+  default     = "SimpleScaling"
+}
+
+variable "asp_scale_down_policy_enabled" {
+  type        = bool
+  description = "Auto Scaling Policy Scale Down Policy Enabled or No"
+  default     = true
+}
+
+variable "asp_scale_up_name" {
+  type        = string
+  description = "Auto Scaling Policy Name"
+  default     = "custom_scale_up_policy"
+}
+
+variable "asp_scale_up_adjustment_type" {
+  type        = string
+  description = "Auto Scaling Policy Scale Up Adjustment Type"
+  default     = "ChangeInCapacity"
+}
+
+variable "asp_scale_up_scaling_adjustment" {
+  type        = number
+  description = "Auto Scaling Policy Scale Up Scaling Adjustment"
+  default     = 1
+}
+
+variable "asp_scale_up_cooldown" {
+  type        = number
+  description = "Auto Scaling Policy Scale Up Cooldown"
+  default     = 60
+}
+
+variable "asp_scale_up_policy_type" {
+  type        = string
+  description = "Auto Scaling Policy Scale Up Policy Type"
+  default     = "SimpleScaling"
+}
+
+variable "asp_scale_up_policy_enabled" {
+  type        = bool
+  description = "Auto Scaling Policy Scale Up Policy Enabled or No"
+  default     = true
+}
+
+variable "alarm_scale_down_description" {
+  type        = string
+  description = "CloudWatch Scale Down Alarm Description"
+  default     = "Monitors CPU utilization for ASG"
+}
+
+variable "alarm_scale_dowm_name" {
+  type        = string
+  description = "CloudWatch Scale Down Alarm Name"
+  default     = "auto_scale_down"
+}
+
+variable "alarm_scale_dowm_comparison_operator" {
+  type        = string
+  description = "CloudWatch Scale Down Alarm Comparison Operator"
+  default     = "LessThanOrEqualToThreshold"
+}
+
+variable "alarm_scale_down_namespace" {
+  type        = string
+  description = "CloudWatch Scale Down Namespace"
+  default     = "AWS/EC2"
+}
+
+variable "alarm_scale_down_metric_name" {
+  type        = string
+  description = "Alarm scale down metric name"
+  default     = "CPUUtilization"
+}
+
+variable "alarm_scale_down_threshold" {
+  type        = number
+  description = "Alarm scale down threshold"
+  default     = 3
+}
+
+variable "alarm_scale_down_evaluation_periods" {
+  type        = number
+  description = "Alarm scale down evaluation periods"
+  default     = 2
+}
+
+variable "alarm_scale_down_period" {
+  type        = number
+  description = "Alarm scale down period"
+  default     = 60
+}
+
+variable "alarm_scale_down_statistic" {
+  type        = string
+  description = "Alarm Scale Down Statistic"
+  default     = "Average"
+}
+
+variable "alarm_scale_down_actions_enabled" {
+  type        = bool
+  description = "Alarm Scale Down Actions Enabled"
+  default     = true
+}
+
+variable "alarm_scale_up_description" {
+  type        = string
+  description = "CloudWatch Scale Up Alarm Description"
+  default     = "Monitors Upper Bound CPU utilization for ASG"
+}
+
+variable "alarm_scale_up_name" {
+  type        = string
+  description = "CloudWatch Scale Up Alarm Name"
+  default     = "auto_scale_up"
+}
+
+variable "alarm_scale_up_comparison_operator" {
+  type        = string
+  description = "CloudWatch Scale Up Alarm Comparison Operator"
+  default     = "GreaterThanOrEqualToThreshold"
+}
+
+variable "alarm_scale_up_namespace" {
+  type        = string
+  description = "CloudWatch Scale Up Namespace"
+  default     = "AWS/EC2"
+}
+
+variable "alarm_scale_up_metric_name" {
+  type        = string
+  description = "Alarm scale up metric name"
+  default     = "CPUUtilization"
+}
+
+variable "alarm_scale_up_threshold" {
+  type        = number
+  description = "Alarm scale up threshold"
+  default     = 5
+}
+
+variable "alarm_scale_up_evaluation_periods" {
+  type        = number
+  description = "Alarm scale up evaluation periods"
+  default     = 2
+}
+
+variable "alarm_scale_up_period" {
+  type        = number
+  description = "Alarm scale up period"
+  default     = 60
+}
+
+variable "alarm_scale_up_statistic" {
+  type        = string
+  description = "Alarm Scale Down Statistic"
+  default     = "Average"
+}
+
+variable "alarm_scale_up_actions_enabled" {
+  type        = bool
+  description = "Alarm Scale up Actions Enabled"
+  default     = true
+}
+
+variable "asg_termination_policies" {
+  type        = list(string)
+  description = "Termination Policy for Auto Scaling Group"
+  default     = ["OldestLaunchTemplate", "OldestInstance"]
+}
+
+variable "lb_algo_type" {
+  type        = string
+  description = "Load Balancer Algorithm Type"
+  default     = "round_robin"
+}
+
+variable "launch_template_name_prefix" {
+  type        = string
+  description = "Launch Template Name"
+  default     = "csye6225-lt-"
 }

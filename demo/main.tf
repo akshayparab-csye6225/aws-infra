@@ -9,10 +9,25 @@ module "networking_service" {
   private_subnet_cidrs = var.private_subnet_cidrs
 }
 
+module "lb_security_group" {
+  source = "../modules/services/securityGroup"
+  depends_on = [
+    module.networking_service,
+  ]
+  sg_name           = var.lb_sg_name
+  vpc-id-in         = module.networking_service.vpc-id-out
+  tcp_ingress_ports = var.lb_ingress_ports
+  protocol          = var.lb_sg_protocol
+  tcp_ingress_cidr  = var.lb_ingress_cidr
+  sg_egress_ports   = var.lb_sg_egress_ports
+  sg_egress_cidr    = var.lb_sg_egress_cidr
+}
+
 module "app_security_group" {
   source = "../modules/services/securityGroup"
   depends_on = [
     module.networking_service,
+    module.lb_security_group,
   ]
   sg_name           = var.sg_name
   vpc-id-in         = module.networking_service.vpc-id-out
@@ -21,6 +36,7 @@ module "app_security_group" {
   tcp_ingress_cidr  = var.tcp_ingress_cidr
   sg_egress_ports   = var.app_sg_egress_ports
   sg_egress_cidr    = var.app_sg_egress_cidr
+  sg-id-in          = module.lb_security_group.security-group-id-out
 }
 
 module "db_security_group" {
@@ -73,8 +89,8 @@ module "aws_s3_bucket" {
   s3_versioning_configuration               = var.s3_versioning_configuration
 }
 
-module "ec2_instance" {
-  source = "../modules/services/ec2"
+module "launch_template" {
+  source = "../modules/services/launchTemplate"
   depends_on = [
     module.networking_service,
     module.app_security_group,
@@ -103,21 +119,100 @@ module "ec2_instance" {
   statsd_host                       = var.statsd_host
   statsd_port                       = var.statsd_port
   aws_iam_cw_policy_name            = var.aws_iam_cw_policy_name
+  launch_template_name_prefix       = var.launch_template_name_prefix
 }
 
-module "dns-record" {
+module "load_balancer" {
+  source = "../modules/services/loadbalancer"
+  depends_on = [
+    module.networking_service,
+    module.lb_security_group
+  ]
+  lb-sg-id-in                           = module.lb_security_group.security-group-id-out
+  vpc-id-in                             = module.networking_service.vpc-id-out
+  vpc-all-public-subnet-id-in           = module.networking_service.vpc-all-public-subnet-id-out
+  lb_name                               = var.lb_name
+  lb_internal                           = var.lb_internal
+  lb_type                               = var.lb_type
+  lb_ip_address_type                    = var.lb_ip_address_type
+  lb_tg_name_prefix                     = var.lb_tg_name_prefix
+  lb_tg_target_type                     = var.lb_tg_target_type
+  lb_tg_port                            = var.lb_tg_port
+  lb_tg_protocol                        = var.lb_tg_protocol
+  lb_tg_protocol_version                = var.lb_tg_protocol_version
+  lb_tg_healthcheck_enabled             = var.lb_tg_healthcheck_enabled
+  lb_tg_healthcheck_path                = var.lb_tg_healthcheck_path
+  lb_tg_healthcheck_port                = var.lb_tg_healthcheck_port
+  lb_tg_healthcheck_protocol            = var.lb_tg_healthcheck_protocol
+  lb_tg_healthcheck_timeout             = var.lb_tg_healthcheck_timeout
+  lb_tg_healthcheck_interval            = var.lb_tg_healthcheck_interval
+  lb_tg_healthcheck_healthy_threshold   = var.lb_tg_healthcheck_healthy_threshold
+  lb_tg_healthcheck_unhealthy_threshold = var.lb_tg_healthcheck_unhealthy_threshold
+  lb_listener_port                      = var.lb_listener_port
+  lb_listener_protocol                  = var.lb_listener_protocol
+  lb_listener_default_action_type       = var.lb_listener_default_action_type
+  lb_algo_type                          = var.lb_algo_type
+}
+
+module "auto_scaling_group" {
+  source = "../modules/services/autoScalingGroup"
+  depends_on = [
+    module.networking_service,
+    module.load_balancer,
+    module.launch_template,
+  ]
+  vpc-all-public-subnet-id-in          = module.networking_service.vpc-all-public-subnet-id-out
+  launch-template-id-in                = module.launch_template.launch-template-id-out
+  lb-target-group-arn-in               = module.load_balancer.lb-target-group-arn-out
+  asg_name                             = var.asg_name
+  asg_desired_capacity                 = var.asg_desired_capacity
+  asg_max_size                         = var.asg_max_size
+  asg_min_size                         = var.asg_min_size
+  asg_default_cooldown                 = var.asg_default_cooldown
+  asg_health_check_grace_period        = var.asg_health_check_grace_period
+  asg_health_check_type                = var.asg_health_check_type
+  asg_tag_key                          = var.asg_tag_key
+  asg_tag_value                        = var.asg_tag_value
+  asg_tag_propagate_at_launch          = var.asg_tag_propagate_at_launch
+  asg_launch_template_version          = var.asg_launch_template_version
+  asp_scale_down_name                  = var.asp_scale_down_name
+  asp_scale_down_adjustment_type       = var.asp_scale_down_adjustment_type
+  asp_scale_down_scaling_adjustment    = var.asp_scale_down_scaling_adjustment
+  asp_scale_down_cooldown              = var.asp_scale_down_cooldown
+  asp_scale_down_policy_type           = var.asp_scale_down_policy_type
+  asp_scale_up_policy_enabled          = var.asp_scale_up_policy_enabled
+  alarm_scale_down_description         = var.alarm_scale_down_description
+  alarm_scale_dowm_name                = var.alarm_scale_dowm_name
+  alarm_scale_dowm_comparison_operator = var.alarm_scale_dowm_comparison_operator
+  alarm_scale_down_namespace           = var.alarm_scale_down_namespace
+  alarm_scale_down_metric_name         = var.alarm_scale_down_metric_name
+  alarm_scale_down_threshold           = var.alarm_scale_down_threshold
+  alarm_scale_down_evaluation_periods  = var.alarm_scale_down_evaluation_periods
+  alarm_scale_down_period              = var.alarm_scale_down_period
+  alarm_scale_down_statistic           = var.alarm_scale_down_statistic
+  alarm_scale_down_actions_enabled     = var.alarm_scale_down_actions_enabled
+  alarm_scale_up_description           = var.alarm_scale_up_description
+  alarm_scale_up_name                  = var.alarm_scale_up_name
+  alarm_scale_up_comparison_operator   = var.alarm_scale_up_comparison_operator
+  alarm_scale_up_namespace             = var.alarm_scale_up_namespace
+  alarm_scale_up_metric_name           = var.alarm_scale_up_metric_name
+  alarm_scale_up_threshold             = var.alarm_scale_up_threshold
+  alarm_scale_up_evaluation_periods    = var.alarm_scale_up_evaluation_periods
+  alarm_scale_up_period                = var.alarm_scale_up_period
+  alarm_scale_up_statistic             = var.alarm_scale_up_statistic
+  alarm_scale_up_actions_enabled       = var.alarm_scale_up_actions_enabled
+  asg_termination_policies             = var.asg_termination_policies
+}
+
+module "dns_record" {
   source = "../modules/services/dnsRecord"
   depends_on = [
-    module.ec2_instance
+    module.load_balancer
   ]
-  ec2-public-ip-in        = module.ec2_instance.ec2-public-ip-out
-  hosted_zone_name        = var.hosted_zone_name
-  private_zone            = var.private_zone
-  hosted_zone_domain_name = var.hosted_zone_domain_name
-  hosted_zone_record_type = var.hosted_zone_record_type
-  hosted_zone_record_ttl  = var.hosted_zone_record_ttl
-  allow_overwrite_record  = var.allow_overwrite_record
-  createAlias             = var.createAlias
-  alias_domain_name       = var.alias_domain_name
-  alias_record_type       = var.alias_record_type
+  alias_domain_name = var.alias_domain_name
+  alias_record_type = var.alias_record_type
+  lb-dns-name-in    = module.load_balancer.lb-dns-name-out
+  lb-zone-id-in     = module.load_balancer.lb-zone-id-out
+  hosted_zone_name  = var.hosted_zone_name
+  private_zone      = var.private_zone
 }

@@ -57,3 +57,7 @@ variable "ec2-public-ip-in" {
   description = "Public IP of EC2 Instance"
   default     = "127.0.0.1"
 }
+
+variable "lb-dns-name-in" {}
+
+variable "lb-zone-id-in" {}
