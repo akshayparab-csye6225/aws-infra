@@ -50,6 +50,11 @@ This will apply the changes to your infrastructure.
    terraform destroy -var-file="{environment}.tfvars"
    ```
 
+### Note
+AWS-CLI Certificate Import Command to import third-party Certificate to AWS Certificate Manager
+    ```
+    aws acm import-certificate --certificate fileb://{path to certificate} --certificate-chain fileb://{path to certificate chain} --private-key fileb://{path to certificate private key}  --profile {profile name}
+    ```
 ### Modules
 This Terraform project is organized into modules, which are reusable units of code that can be used to provision infrastructure. Each module is contained in a separate subdirectory within the project.
 

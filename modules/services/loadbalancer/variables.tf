@@ -109,13 +109,13 @@ variable "lb_tg_healthcheck_unhealthy_threshold" {
 variable "lb_listener_port" {
   type        = number
   description = "Load Balancer Listener Port"
-  default     = 80
+  default     = 443
 }
 
 variable "lb_listener_protocol" {
   type        = string
   description = "Load Balancer Listener Protocol"
-  default     = "HTTP"
+  default     = "HTTPS"
 }
 
 variable "lb_listener_default_action_type" {
@@ -128,4 +128,22 @@ variable "lb_algo_type" {
   type        = string
   description = "Load Balancer Algorithm Type"
   default     = "round_robin"
+}
+
+variable "acm_cert_issued_domain" {
+  type        = string
+  description = "Domain for which SSL Certificate has been issued"
+  default     = "prod.akshayparab.me"
+}
+
+variable "acm_cert_statuses" {
+  type        = list(string)
+  description = "Status of SSL Certificate"
+  default     = ["ISSUED"]
+}
+
+variable "acm_cert_key_types" {
+  type        = list(string)
+  description = "Certificate Key Types"
+  default     = ["RSA_2048"]
 }

@@ -1,3 +1,7 @@
+data "aws_iam_user" "AWS_User" {
+  user_name = var.aws_user_name
+}
+
 # Create a new RDS parameter group for MySQL 8.0
 resource "aws_db_subnet_group" "private_subnet" {
   name_prefix = "private-subnet-group-"
@@ -8,6 +12,26 @@ resource "aws_db_subnet_group" "private_subnet" {
 resource "aws_db_parameter_group" "mysql_parameter_group" {
   name_prefix = "db-parameter-group-"
   family      = var.aws_db_parameter_group_family
+}
+
+resource "aws_kms_key" "aws_kms_key" {
+  description = var.kms_key_description
+  is_enabled  = var.kms_key_enabled
+  policy = jsonencode({
+    "Id" : "key-consolepolicy-3",
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "Enable IAM User Permissions",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : ["${data.aws_iam_user.AWS_User.arn}"]
+        },
+        "Action" : "kms:*",
+        "Resource" : "*"
+      }
+    ]
+  })
 }
 
 # Create a new RDS instance using the MySQL engine
@@ -27,4 +51,6 @@ resource "aws_db_instance" "rds_instance" {
   publicly_accessible    = var.rds_instance_publicly_accessible
   multi_az               = var.rds_instance_multi_az
   vpc_security_group_ids = [var.db-security-group-id-in]
+  storage_encrypted      = var.rds_storage_encrypted
+  kms_key_id             = aws_kms_key.aws_kms_key.arn
 }

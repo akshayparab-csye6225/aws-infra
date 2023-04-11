@@ -1,3 +1,9 @@
+data "aws_acm_certificate" "issued" {
+  domain    = var.acm_cert_issued_domain
+  key_types = var.acm_cert_key_types
+  statuses  = var.acm_cert_statuses
+}
+
 resource "aws_lb" "lb" {
   name               = var.lb_name
   internal           = var.lb_internal
@@ -34,6 +40,7 @@ resource "aws_lb_listener" "lb_listener" {
   load_balancer_arn = aws_lb.lb.arn
   port              = var.lb_listener_port
   protocol          = var.lb_listener_protocol
+  certificate_arn   = data.aws_acm_certificate.issued.arn
   default_action {
     type             = var.lb_listener_default_action_type
     target_group_arn = aws_lb_target_group.alb_tg.arn

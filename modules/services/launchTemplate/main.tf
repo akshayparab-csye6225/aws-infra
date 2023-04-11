@@ -6,6 +6,13 @@ data "aws_ami" "latest" {
   }
 }
 
+data "aws_iam_user" "AWS_User" {
+  user_name = var.aws_user_name
+}
+
+data "aws_iam_role" "AWSServiceRoleForAutoScaling" {
+  name = "AWSServiceRoleForAutoScaling"
+}
 data "template_file" "user_data" {
   template = <<EOF
 #!/bin/bash
@@ -121,11 +128,67 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role = aws_iam_role.ec2_csye6225_role.name
 }
 
+resource "aws_kms_key" "ec2_ebs_kms_key" {
+  description = var.kms_key_description
+  is_enabled  = var.kms_key_enabled
+  policy = jsonencode({
+    "Id" : "key-consolepolicy-3",
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "Enable IAM User Permissions",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : ["${data.aws_iam_user.AWS_User.arn}"]
+        },
+        "Action" : "kms:*",
+        "Resource" : "*"
+      },
+      {
+        "Sid" : "Allow use of the key",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : [
+            "${data.aws_iam_role.AWSServiceRoleForAutoScaling.arn}"
+          ]
+        },
+        "Action" : [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Sid" : "Allow attachment of persistent resources",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : [
+            "${data.aws_iam_role.AWSServiceRoleForAutoScaling.arn}"
+          ]
+        },
+        "Action" : [
+          "kms:CreateGrant",
+          "kms:ListGrants",
+          "kms:RevokeGrant"
+        ],
+        "Resource" : "*",
+        "Condition" : {
+          "Bool" : {
+            "kms:GrantIsForAWSResource" : "true"
+          }
+        }
+      }
+    ]
+  })
+}
 resource "aws_launch_template" "asg_launch_config" {
-  name_prefix   = var.launch_template_name_prefix
+  name          = var.launch_template_name
   image_id      = var.ami_id == null ? data.aws_ami.latest.id : var.ami_id
   instance_type = var.ec2_instance_type
-  key_name      = "ec2"
+  key_name      = var.launch_template_key_name
   network_interfaces {
     subnet_id                   = var.vpc-public-subnet-id-in
     security_groups             = [var.ec2-security-group-id-in]
@@ -145,6 +208,8 @@ resource "aws_launch_template" "asg_launch_config" {
       volume_size           = var.root_volume_size
       volume_type           = var.root_volume_type
       delete_on_termination = var.root_volume_delete_on_termination
+      encrypted             = var.ebs_encrypted
+      kms_key_id            = aws_kms_key.ec2_ebs_kms_key.arn
     }
   }
   tags = {

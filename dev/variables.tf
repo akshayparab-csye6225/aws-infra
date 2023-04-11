@@ -471,7 +471,7 @@ variable "lb_sg_name" {
 variable "lb_ingress_ports" {
   type        = list(number)
   description = "list of tcp ingress ports"
-  default     = [80, 443]
+  default     = [443]
 }
 
 variable "lb_sg_protocol" {
@@ -639,13 +639,13 @@ variable "lb_tg_healthcheck_unhealthy_threshold" {
 variable "lb_listener_port" {
   type        = number
   description = "Load Balancer Listener Port"
-  default     = 80
+  default     = 443
 }
 
 variable "lb_listener_protocol" {
   type        = string
   description = "Load Balancer Listener Protocol"
-  default     = "HTTP"
+  default     = "HTTPS"
 }
 
 variable "lb_listener_default_action_type" {
@@ -924,10 +924,10 @@ variable "lb_algo_type" {
   default     = "round_robin"
 }
 
-variable "launch_template_name_prefix" {
+variable "launch_template_name" {
   type        = string
   description = "Launch Template Name"
-  default     = "csye6225-lt-"
+  default     = "csye6225-launch-template"
 }
 
 variable "nw_interface_delete_on_termination" {
@@ -940,4 +940,77 @@ variable "asg_force_delete" {
   type        = bool
   description = "Auto Scaling Group Force Delete"
   default     = false
+}
+
+variable "lt_block_device_name" {
+  type        = string
+  description = "Launch Template Device Name"
+  default     = "/dev/xvda"
+}
+
+variable "acm_cert_issued_domain" {
+  type        = string
+  description = "Domain for which SSL Certificate has been issued"
+  default     = "dev.akshayparab.me"
+}
+
+variable "acm_cert_statuses" {
+  type        = list(string)
+  description = "Status of SSL Certificate"
+  default     = ["ISSUED"]
+}
+
+variable "acm_cert_key_types" {
+  type        = list(string)
+  description = "Certificate Key Types"
+  default     = ["RSA_2048"]
+}
+
+
+variable "ebs_encrypted" {
+  type        = bool
+  description = "EBS need to be encrypted or no"
+  default     = true
+}
+
+variable "kms_key_description" {
+  type        = string
+  description = "KMS Key Description"
+  default     = "KMS Key for encrypting EBS volumes attached to EC2 instances"
+}
+
+variable "kms_key_enabled" {
+  type        = bool
+  description = "Is KMS Key Enabled"
+  default     = true
+}
+
+variable "rds_kms_key_description" {
+  type        = string
+  description = "KMS Key Description"
+  default     = "KMS Key for encrypting RDS instance"
+}
+
+variable "rds_kms_key_enabled" {
+  type        = bool
+  description = "Is KMS Key Enabled"
+  default     = true
+}
+
+variable "rds_storage_encrypted" {
+  type        = bool
+  description = "EDS Storage To Be Encrypted Or No"
+  default     = true
+}
+
+variable "aws_user_name" {
+  type        = string
+  description = "AWS User Name"
+  default     = "aws-cli"
+}
+
+variable "launch_template_key_name" {
+  type        = string
+  description = "launch template key name"
+  default     = "ec2"
 }

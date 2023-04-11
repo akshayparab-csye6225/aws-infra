@@ -9,7 +9,7 @@ variable "protocol" {
 variable "tcp_ingress_ports" {
   type        = list(number)
   description = "list of tcp ingress ports"
-  default     = [22, 80, 443, 3001]
+  default     = [3001]
 }
 
 variable "tcp_ingress_cidr" {
