@@ -74,6 +74,10 @@ module "mysql_rds_db" {
   rds_instance_publicly_accessible = var.rds_instance_publicly_accessible
   rds_instance_multi_az            = var.rds_instance_multi_az
   db-security-group-id-in          = module.db_security_group.security-group-id-out
+  kms_key_description              = var.rds_kms_key_description
+  kms_key_enabled                  = var.rds_kms_key_enabled
+  rds_storage_encrypted            = var.rds_storage_encrypted
+  aws_user_name                    = var.aws_user_name
 }
 
 module "aws_s3_bucket" {
@@ -119,8 +123,14 @@ module "launch_template" {
   statsd_host                        = var.statsd_host
   statsd_port                        = var.statsd_port
   aws_iam_cw_policy_name             = var.aws_iam_cw_policy_name
-  launch_template_name_prefix        = var.launch_template_name_prefix
+  launch_template_name               = var.launch_template_name
   nw_interface_delete_on_termination = var.nw_interface_delete_on_termination
+  lt_block_device_name               = var.lt_block_device_name
+  ebs_encrypted                      = var.ebs_encrypted
+  kms_key_description                = var.kms_key_description
+  kms_key_enabled                    = var.kms_key_enabled
+  aws_user_name                      = var.aws_user_name
+  launch_template_key_name           = var.launch_template_key_name
 }
 
 module "load_balancer" {
@@ -153,6 +163,9 @@ module "load_balancer" {
   lb_listener_protocol                  = var.lb_listener_protocol
   lb_listener_default_action_type       = var.lb_listener_default_action_type
   lb_algo_type                          = var.lb_algo_type
+  acm_cert_issued_domain                = var.acm_cert_issued_domain
+  acm_cert_statuses                     = var.acm_cert_statuses
+  acm_cert_key_types                    = var.acm_cert_key_types
 }
 
 module "auto_scaling_group" {

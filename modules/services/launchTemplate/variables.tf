@@ -159,14 +159,44 @@ variable "lt_block_device_name" {
   default     = "/dev/xvda"
 }
 
-variable "launch_template_name_prefix" {
+variable "launch_template_name" {
   type        = string
   description = "Launch Template Name"
-  default     = "csye6225-lt-"
+  default     = "csye6225-launch-template"
 }
 
 variable "nw_interface_delete_on_termination" {
   type        = bool
   description = "Network Interface Delete On Termination"
   default     = true
+}
+
+variable "ebs_encrypted" {
+  type        = bool
+  description = "EBS need to be encrypted or no"
+  default     = true
+}
+
+variable "kms_key_description" {
+  type        = string
+  description = "KMS Key Description"
+  default     = "KMS Key for encrypting EBS volumes attached to EC2 instances"
+}
+
+variable "kms_key_enabled" {
+  type        = bool
+  description = "Is KMS Key Enabled"
+  default     = true
+}
+
+variable "aws_user_name" {
+  type        = string
+  description = "AWS User Name"
+  default     = "aws-cli"
+}
+
+variable "launch_template_key_name" {
+  type        = string
+  description = "launch template key name"
+  default     = "ec2"
 }

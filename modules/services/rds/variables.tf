@@ -87,3 +87,26 @@ variable "db-security-group-id-in" {
   description = "id of custom db security group"
   default     = "#"
 }
+
+variable "kms_key_description" {
+  type        = string
+  description = "KMS Key Description"
+  default     = "KMS Key for encrypting RDS instance"
+}
+
+variable "rds_storage_encrypted" {
+  type        = bool
+  description = "EDS Storage To Be Encrypted Or No"
+  default     = true
+}
+variable "kms_key_enabled" {
+  type        = bool
+  description = "Is KMS Key Enabled"
+  default     = true
+}
+
+variable "aws_user_name" {
+  type        = string
+  description = "AWS User Name"
+  default     = "aws-cli"
+}
