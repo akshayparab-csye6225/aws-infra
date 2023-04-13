@@ -131,8 +131,64 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 resource "aws_kms_key" "ec2_ebs_kms_key" {
   description = var.kms_key_description
   is_enabled  = var.kms_key_enabled
+  # policy = jsonencode({
+  #   "Id" : "key-consolepolicy-3",
+  #   "Version" : "2012-10-17",
+  #   "Statement" : [
+  #     {
+  #       "Sid" : "Enable IAM User Permissions",
+  #       "Effect" : "Allow",
+  #       "Principal" : {
+  #         "AWS" : ["${data.aws_iam_user.AWS_User.arn}"]
+  #       },
+  #       "Action" : "kms:*",
+  #       "Resource" : "*"
+  #     },
+  #     {
+  #       "Sid" : "Allow use of the key",
+  #       "Effect" : "Allow",
+  #       "Principal" : {
+  #         "AWS" : [
+  #           "${data.aws_iam_role.AWSServiceRoleForAutoScaling.arn}"
+  #         ]
+  #       },
+  #       "Action" : [
+  #         "kms:Encrypt",
+  #         "kms:Decrypt",
+  #         "kms:ReEncrypt*",
+  #         "kms:GenerateDataKey*",
+  #         "kms:DescribeKey"
+  #       ],
+  #       "Resource" : "*"
+  #     },
+  #     {
+  #       "Sid" : "Allow attachment of persistent resources",
+  #       "Effect" : "Allow",
+  #       "Principal" : {
+  #         "AWS" : [
+  #           "${data.aws_iam_role.AWSServiceRoleForAutoScaling.arn}"
+  #         ]
+  #       },
+  #       "Action" : [
+  #         "kms:CreateGrant",
+  #         "kms:ListGrants",
+  #         "kms:RevokeGrant"
+  #       ],
+  #       "Resource" : "*",
+  #       "Condition" : {
+  #         "Bool" : {
+  #           "kms:GrantIsForAWSResource" : "true"
+  #         }
+  #       }
+  #     }
+  #   ]
+  # })
+}
+
+resource "aws_kms_key_policy" "ec2_ebs_kms_key_policy" {
+  key_id = aws_kms_key.ec2_ebs_kms_key.id
   policy = jsonencode({
-    "Id" : "key-consolepolicy-3",
+    "Id" : "ec2-ebs-kms-key-policy",
     "Version" : "2012-10-17",
     "Statement" : [
       {
@@ -142,7 +198,7 @@ resource "aws_kms_key" "ec2_ebs_kms_key" {
           "AWS" : ["${data.aws_iam_user.AWS_User.arn}"]
         },
         "Action" : "kms:*",
-        "Resource" : "*"
+        "Resource" : "${aws_kms_key.ec2_ebs_kms_key.arn}"
       },
       {
         "Sid" : "Allow use of the key",
@@ -159,7 +215,7 @@ resource "aws_kms_key" "ec2_ebs_kms_key" {
           "kms:GenerateDataKey*",
           "kms:DescribeKey"
         ],
-        "Resource" : "*"
+        "Resource" : "${aws_kms_key.ec2_ebs_kms_key.arn}"
       },
       {
         "Sid" : "Allow attachment of persistent resources",
@@ -174,7 +230,7 @@ resource "aws_kms_key" "ec2_ebs_kms_key" {
           "kms:ListGrants",
           "kms:RevokeGrant"
         ],
-        "Resource" : "*",
+        "Resource" : "${aws_kms_key.ec2_ebs_kms_key.arn}",
         "Condition" : {
           "Bool" : {
             "kms:GrantIsForAWSResource" : "true"

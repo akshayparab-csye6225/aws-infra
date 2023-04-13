@@ -131,6 +131,9 @@ module "launch_template" {
   kms_key_enabled                    = var.kms_key_enabled
   aws_user_name                      = var.aws_user_name
   launch_template_key_name           = var.launch_template_key_name
+  ami_name_regex                     = var.ami_name_regex
+  envfilePath                        = var.envfilePath
+  rds_dialect                        = var.rds_dialect
 }
 
 module "load_balancer" {
@@ -195,6 +198,11 @@ module "auto_scaling_group" {
   asp_scale_down_cooldown              = var.asp_scale_down_cooldown
   asp_scale_down_policy_type           = var.asp_scale_down_policy_type
   asp_scale_up_policy_enabled          = var.asp_scale_up_policy_enabled
+  asp_scale_up_name                    = var.asp_scale_up_name
+  asp_scale_up_adjustment_type         = var.asp_scale_up_adjustment_type
+  asp_scale_up_scaling_adjustment      = var.asp_scale_up_scaling_adjustment
+  asp_scale_up_cooldown                = var.asp_scale_up_cooldown
+  asp_scale_up_policy_type             = var.asp_scale_up_policy_type
   alarm_scale_down_description         = var.alarm_scale_down_description
   alarm_scale_dowm_name                = var.alarm_scale_dowm_name
   alarm_scale_dowm_comparison_operator = var.alarm_scale_dowm_comparison_operator

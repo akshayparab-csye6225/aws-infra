@@ -14,11 +14,15 @@ resource "aws_db_parameter_group" "mysql_parameter_group" {
   family      = var.aws_db_parameter_group_family
 }
 
-resource "aws_kms_key" "aws_kms_key" {
+resource "aws_kms_key" "rds_kms_key" {
   description = var.kms_key_description
   is_enabled  = var.kms_key_enabled
+}
+
+resource "aws_kms_key_policy" "rds_kms_key_policy" {
+  key_id = aws_kms_key.rds_kms_key.id
   policy = jsonencode({
-    "Id" : "key-consolepolicy-3",
+    "Id" : "rds-kms-key-policy",
     "Version" : "2012-10-17",
     "Statement" : [
       {
@@ -28,7 +32,7 @@ resource "aws_kms_key" "aws_kms_key" {
           "AWS" : ["${data.aws_iam_user.AWS_User.arn}"]
         },
         "Action" : "kms:*",
-        "Resource" : "*"
+        "Resource" : "${aws_kms_key.rds_kms_key.arn}"
       }
     ]
   })
@@ -52,5 +56,5 @@ resource "aws_db_instance" "rds_instance" {
   multi_az               = var.rds_instance_multi_az
   vpc_security_group_ids = [var.db-security-group-id-in]
   storage_encrypted      = var.rds_storage_encrypted
-  kms_key_id             = aws_kms_key.aws_kms_key.arn
+  kms_key_id             = aws_kms_key.rds_kms_key.arn
 }
